@@ -1,0 +1,426 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tab{padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);font-size:13px;cursor:pointer;transition:all .15s}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+.page{display:none}.page.active{display:block}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:var(--border-radius-md);font-weight:500}
+.badge-blue{background:#E6F1FB;color:#0C447C}
+.badge-teal{background:#E1F5EE;color:#085041}
+.badge-amber{background:#FAEEDA;color:#633806}
+.badge-coral{background:#FAECE7;color:#712B13}
+.badge-purple{background:#EEEDFE;color:#3C3489}
+.section-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:.75rem}
+.muted{color:var(--color-text-secondary);font-size:13px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.col{flex:1;min-width:140px}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem 1rem}
+.metric-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric-val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.progress-bar{height:6px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:3px;transition:width .4s ease}
+.checklist{list-style:none}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;color:var(--color-text-primary)}
+.checklist li:last-child{border:none}
+.check-box{width:18px;height:18px;min-width:18px;border:0.5px solid var(--color-border-secondary);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;background:var(--color-background-primary);transition:all .15s}
+.check-box.done{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.phase-block{border-left:3px solid;padding-left:1rem;margin-bottom:1.25rem}
+.phase-1{border-color:#378ADD}
+.phase-2{border-color:#1D9E75}
+.phase-3{border-color:#D85A30}
+.phase-title{font-size:14px;font-weight:500;margin-bottom:.4rem}
+.phase-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.module-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+.module-header{display:flex;align-items:center;gap:10px;margin-bottom:.75rem}
+.module-icon{width:32px;height:32px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:15px}
+.tip-row{font-size:13px;color:var(--color-text-secondary);line-height:1.6;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tip-row:last-child{border:none}
+.vocab-tracker{margin-top:.5rem}
+.vocab-input{display:flex;gap:8px;margin-bottom:.75rem}
+.vocab-input input{flex:1;font-size:13px;padding:6px 10px}
+.vocab-list{max-height:180px;overflow-y:auto;font-size:13px}
+.vocab-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.vocab-item:last-child{border:none}
+.del-btn{font-size:11px;color:var(--color-text-secondary);cursor:pointer;padding:2px 6px;border-radius:4px;border:0.5px solid var(--color-border-tertiary);background:transparent}
+.del-btn:hover{background:var(--color-background-secondary)}
+.weekly-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:1rem}
+.day-cell{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 4px;text-align:center;cursor:pointer;transition:all .15s}
+.day-cell.studied{background:#E1F5EE;border-color:#1D9E75}
+.day-cell .day-name{font-size:10px;color:var(--color-text-secondary);margin-bottom:4px}
+.day-cell .day-num{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.day-cell.studied .day-name,.day-cell.studied .day-num{color:#085041}
+.ask-btn{width:100%;padding:9px;font-size:13px;margin-top:.75rem}
+</style>
+
+<h2 class="sr-only">IELTS 14-Week Preparation System — dashboard with study plan, module strategies, vocabulary tracker, and progress log</h2>
+
+<div style="padding:1rem 0">
+
+<div style="margin-bottom:1.25rem">
+  <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Your IELTS prep system</div>
+  <div class="muted">B2 → target Band 7.5+ · 14-week plan built from top scorer strategies</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="showPage('overview')">Overview</button>
+  <button class="tab" onclick="showPage('plan')">14-week plan</button>
+  <button class="tab" onclick="showPage('modules')">Module strategies</button>
+  <button class="tab" onclick="showPage('vocab')">Vocab tracker</button>
+  <button class="tab" onclick="showPage('log')">Study log</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="page-overview" class="page active">
+  <div class="row" style="margin-bottom:1rem">
+    <div class="col metric">
+      <div class="metric-label">Weeks remaining</div>
+      <div class="metric-val" id="weeks-left">14</div>
+    </div>
+    <div class="col metric">
+      <div class="metric-label">Days studied</div>
+      <div class="metric-val" id="days-studied">0</div>
+    </div>
+    <div class="col metric">
+      <div class="metric-label">Vocab added</div>
+      <div class="metric-val" id="vocab-count">0</div>
+    </div>
+    <div class="col metric">
+      <div class="metric-label">Tasks done</div>
+      <div class="metric-val" id="tasks-done">0 / 20</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">What top Band 8–9 scorers actually did</div>
+    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.8">
+      <div style="padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">✦ They studied <strong style="color:var(--color-text-primary)">45–90 min daily</strong> — not marathon 5-hour sessions</div>
+      <div style="padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">✦ They focused on <strong style="color:var(--color-text-primary)">task types and scoring criteria</strong>, not just general English</div>
+      <div style="padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">✦ They <strong style="color:var(--color-text-primary)">recorded themselves</strong> speaking and reviewed for fluency gaps</div>
+      <div style="padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">✦ They treated Reading as an <strong style="color:var(--color-text-primary)">information-finding task</strong>, not a reading task</div>
+      <div style="padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">✦ They used <strong style="color:var(--color-text-primary)">real Cambridge/British Council</strong> materials exclusively</div>
+      <div style="padding:5px 0">✦ They took <strong style="color:var(--color-text-primary)">full mock tests every 2 weeks</strong> under real timed conditions</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Your B2 → 7.5+ roadmap</div>
+    <div class="phase-block phase-1">
+      <div class="phase-title">Phase 1 — Foundations (weeks 1–4) <span class="badge badge-blue">Now</span></div>
+      <div class="phase-desc">Diagnose weak spots with a full mock test. Learn all question types per module. Build 10 new academic words/day. Focus on grammar accuracy (complex sentences, passive voice).</div>
+    </div>
+    <div class="phase-block phase-2">
+      <div class="phase-title">Phase 2 — Skills sharpening (weeks 5–10)</div>
+      <div class="phase-desc">Module-by-module deep practice. Write 2 Task 2 essays/week with structure review. Do 2 full Listening tests/day. Start timing yourself strictly. Expand collocations and paraphrasing.</div>
+    </div>
+    <div class="phase-block phase-3">
+      <div class="phase-title">Phase 3 — Mock & refine (weeks 11–14)</div>
+      <div class="phase-desc">One full mock test per week under real conditions. Fix recurring error patterns. Speaking practice daily with recording. No new topics — consolidate and sharpen.</div>
+    </div>
+  </div>
+
+  <button class="ask-btn" onclick="sendPrompt('Based on my B2 level and 14 weeks, what should I do in my very first week of IELTS prep?')">Ask Claude: what should I do in week 1? ↗</button>
+</div>
+
+<!-- 14-WEEK PLAN -->
+<div id="page-plan" class="page">
+  <div class="card">
+    <div class="section-title">Weekly focus schedule</div>
+    <div class="muted" style="margin-bottom:1rem">Each day = 60–90 min. Rotate: Listening · Reading · Writing · Speaking · Vocab review</div>
+
+    <div id="checklist-wrap">
+    </div>
+  </div>
+  <button class="ask-btn" onclick="sendPrompt('Give me a detailed day-by-day plan for IELTS week 1 at B2 level, covering all four modules')">Get a detailed day-by-day Week 1 plan ↗</button>
+</div>
+
+<!-- MODULE STRATEGIES -->
+<div id="page-modules" class="page">
+  <div class="module-grid">
+
+    <div class="module-card">
+      <div class="module-header">
+        <div class="module-icon" style="background:#E6F1FB">🎧</div>
+        <div>
+          <div style="font-weight:500;font-size:14px">Listening</div>
+          <span class="badge badge-blue">Easiest to improve fast</span>
+        </div>
+      </div>
+      <div class="tip-row">Read all questions <strong>before</strong> audio starts — predict the answer type</div>
+      <div class="tip-row">Watch for distractors — speakers often say wrong answer first, then correct it</div>
+      <div class="tip-row">Strictly follow word limits: "no more than two words" means exactly that</div>
+      <div class="tip-row">Practice British, Australian & NZ accents (BBC, E2 IELTS YouTube)</div>
+      <div class="tip-row">Do 2 full tests/day in Phase 2, review transcripts after every test</div>
+      <div class="tip-row" style="border:none">Record 10 phrases per section in 3–5 word chunks</div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-header">
+        <div class="module-icon" style="background:#E1F5EE">📖</div>
+        <div>
+          <div style="font-weight:500;font-size:14px">Reading</div>
+          <span class="badge badge-teal">Information-finding, not reading</span>
+        </div>
+      </div>
+      <div class="tip-row">Read questions first → scan passage for answers (never read everything first)</div>
+      <div class="tip-row">Spot capital letters, numbers, and italics — they're often direct answers</div>
+      <div class="tip-row">True/False/Not Given: "Not Given" means info is absent, not wrong</div>
+      <div class="tip-row">Spend 18–20 min on easier passages, save time for harder ones</div>
+      <div class="tip-row">Practice with The Guardian, BBC, The Economist weekly</div>
+      <div class="tip-row" style="border:none">Master synonyms — answers use different words than the passage</div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-header">
+        <div class="module-icon" style="background:#FAEEDA">✍️</div>
+        <div>
+          <div style="font-weight:500;font-size:14px">Writing</div>
+          <span class="badge badge-amber">Needs most time investment</span>
+        </div>
+      </div>
+      <div class="tip-row"><strong>Task 1:</strong> 20 min, 150+ words — describe trends, never give opinions</div>
+      <div class="tip-row"><strong>Task 2:</strong> 40 min, 270–280 words — clear thesis + 2 body paras + conclusion</div>
+      <div class="tip-row">Paraphrase the question in your intro — shows vocabulary range immediately</div>
+      <div class="tip-row">Use collocations: "fundamental reason," "significant impact," "strongly argue"</div>
+      <div class="tip-row">Avoid idioms in essays — they're informal. Use phrasal verbs carefully instead</div>
+      <div class="tip-row" style="border:none">Plan for 5 min before writing — structure prevents incoherence</div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-header">
+        <div class="module-icon" style="background:#FAECE7">🗣️</div>
+        <div>
+          <div style="font-weight:500;font-size:14px">Speaking</div>
+          <span class="badge badge-coral">Confidence + fluency wins</span>
+        </div>
+      </div>
+      <div class="tip-row"><strong>Part 1:</strong> natural, relaxed short answers. Don't over-explain.</div>
+      <div class="tip-row"><strong>Part 2:</strong> use your 1-min prep — jot 3 key points, tell a story</div>
+      <div class="tip-row"><strong>Part 3:</strong> give opinions with reasons + examples: "I think… because… for example…"</div>
+      <div class="tip-row">Use connectors: "As a result," "On the other hand," "That being said"</div>
+      <div class="tip-row">Record yourself daily — review for filler words (um, uh) and pacing</div>
+      <div class="tip-row" style="border:none">Think in English. Watch 4 speaking test videos/week on YouTube (E2 IELTS)</div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="section-title">Scoring criteria (what examiners actually check)</div>
+    <div class="row">
+      <div class="col">
+        <div class="muted" style="font-size:12px;margin-bottom:6px">Writing scored on:</div>
+        <div style="font-size:13px;line-height:1.8;color:var(--color-text-secondary)">
+          Task achievement · Coherence & cohesion · Lexical resource · Grammatical range & accuracy
+        </div>
+      </div>
+      <div class="col">
+        <div class="muted" style="font-size:12px;margin-bottom:6px">Speaking scored on:</div>
+        <div style="font-size:13px;line-height:1.8;color:var(--color-text-secondary)">
+          Fluency & coherence · Lexical resource · Grammatical range & accuracy · Pronunciation
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="ask-btn" onclick="sendPrompt('Give me 10 IELTS Writing Task 2 practice prompts to start with at B2 level, with ideal essay structure for each')">Get Writing Task 2 practice prompts ↗</button>
+</div>
+
+<!-- VOCAB TRACKER -->
+<div id="page-vocab" class="page">
+  <div class="card">
+    <div class="section-title">Vocabulary builder</div>
+    <div class="muted" style="margin-bottom:.75rem">Add 10 new academic words per day. Include the word, meaning, and an example collocations (e.g. "alleviate — to reduce pain/problems — alleviate poverty").</div>
+
+    <div class="vocab-input">
+      <input type="text" id="vocab-word" placeholder="Word + meaning + collocation" />
+      <button onclick="addVocab()" style="padding:6px 14px;font-size:13px">Add</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:.75rem;flex-wrap:wrap">
+      <span class="badge badge-purple" style="cursor:pointer" onclick="filterVocab('all')">All</span>
+      <span class="badge badge-blue" style="cursor:pointer" onclick="filterVocab('academic')">Academic</span>
+      <span class="badge badge-teal" style="cursor:pointer" onclick="filterVocab('collocation')">Collocations</span>
+      <span class="badge badge-amber" style="cursor:pointer" onclick="filterVocab('phrasal')">Phrasal verbs</span>
+    </div>
+
+    <div class="vocab-list" id="vocab-list">
+      <div class="muted" style="padding:1rem 0;text-align:center">No words yet — start adding!</div>
+    </div>
+
+    <div style="margin-top:.75rem;font-size:12px;color:var(--color-text-secondary)">Target: 10 words/day · <span id="today-count">0</span> added today</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">High-frequency IELTS academic words to start with</div>
+    <div style="font-size:13px;line-height:2;color:var(--color-text-secondary)">
+      alleviate · exacerbate · consequently · inevitably · predominantly · substantial · detrimental · advocate · mitigate · contemporary · albeit · counterpart · perceive · attribute · facilitate · undermine · illustrate · controversial · ambiguous · proliferate
+    </div>
+    <button class="ask-btn" onclick="sendPrompt('Give me 20 more advanced academic vocabulary words suitable for IELTS Band 7-8, with meanings and example collocations')">Get more vocab with collocations ↗</button>
+  </div>
+</div>
+
+<!-- STUDY LOG -->
+<div id="page-log" class="page">
+  <div class="card">
+    <div class="section-title">Weekly study tracker — tap days you studied</div>
+    <div class="weekly-grid" id="week-grid"></div>
+    <div style="font-size:12px;color:var(--color-text-secondary)">Tap a day to mark it as studied. Consistency beats intensity.</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Module practice log</div>
+    <ul class="checklist" id="module-log">
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Completed 1 full Listening mock test</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Completed 1 full Reading mock test</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Wrote a Writing Task 1 (graph/chart description)</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Wrote a Writing Task 2 essay (250–280 words)</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Recorded a 2-min Speaking Part 2 and reviewed it</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Reviewed Listening transcript after test</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Added 10 new vocabulary words today</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Practiced True/False/Not Given questions</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Watched an E2 IELTS Speaking sample video</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Read one academic article (Guardian, BBC, Economist)</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Best free resources (used by top scorers)</div>
+    <div style="font-size:13px;color:var(--color-text-secondary);line-height:2">
+      <div><strong style="color:var(--color-text-primary)">Official:</strong> British Council IELTS · Cambridge IELTS books (1–18) · IELTS.org</div>
+      <div><strong style="color:var(--color-text-primary)">YouTube:</strong> E2 IELTS · IELTS Simon · IELTS Liz · IELTS Advantage</div>
+      <div><strong style="color:var(--color-text-primary)">Websites:</strong> ieltsliz.com · ieltssimon.com · ieltsadvantage.com</div>
+      <div><strong style="color:var(--color-text-primary)">Speaking partner:</strong> italki · HelloTalk · Study Together (Discord)</div>
+    </div>
+  </div>
+
+  <button class="ask-btn" onclick="sendPrompt('I am at B2 English level preparing for IELTS in 14 weeks. Can you give me a detailed feedback checklist I can use to self-evaluate my Writing Task 2 essays?')">Get a self-evaluation checklist for Writing ↗</button>
+</div>
+
+</div>
+
+<script>
+const weeks=[
+  {w:1,phase:1,focus:"Diagnostic mock test + learn all question types",tasks:["Take a full timed mock test (all 4 modules)","Identify your weakest module","Learn Listening question types (MC, completion, matching)","Learn Reading question types (T/F/NG, headings, MC)"]},
+  {w:2,phase:1,focus:"Reading & Listening foundations",tasks:["Practice True/False/Not Given daily (20 questions)","Skimming & scanning drills on news articles","Do 1 full Listening test, review transcript fully","Add 10 academic vocab words/day"]},
+  {w:3,phase:1,focus:"Writing Task 2 structure",tasks:["Learn the 4 essay types (opinion, discussion, problem-solution, advantage/disadvantage)","Write 2 Task 2 essays with a clear thesis + structure","Study Band 9 model essays on ieltsliz.com","Grammar: complex sentences, passive voice practice"]},
+  {w:4,phase:1,focus:"Speaking & Writing Task 1",tasks:["Learn Task 1 (Academic): describing charts, graphs, diagrams","Record yourself doing Speaking Part 1 & 2","Watch 4 E2 IELTS speaking sample videos","Practice paraphrasing question prompts for intros"]},
+  {w:5,phase:2,focus:"Listening deep practice",tasks:["2 full Listening tests per day","Record 10 phrases per section in 3–5 word chunks","Accent exposure: BBC Radio, Australian podcasts","Review all errors — identify pattern (distractors? spelling?)"]},
+  {w:6,phase:2,focus:"Reading speed & accuracy",tasks:["Timed reading: finish 40 questions in 60 min","Practice Matching Headings (hardest question type)","Read The Guardian/Economist articles — note paraphrasing","Synonyms drill: replace 10 words in a passage"]},
+  {w:7,phase:2,focus:"Writing Task 2 — advanced",tasks:["Write 2 essays/week under timed conditions (40 min)","Use collocations: fundamental, substantial, mitigate, advocate","Plan every essay for 5 min before writing","Avoid idioms — use advanced linking words instead"]},
+  {w:8,phase:2,focus:"Speaking fluency building",tasks:["Daily 10-min speaking recording — review filler words","Practice Part 3 abstract answers with reasons + examples","Use connectors: As a result / On the other hand / That being said","Find a speaking partner (italki or HelloTalk)"]},
+  {w:9,phase:2,focus:"Full mock test #2 + gap analysis",tasks:["Full timed mock test under exam conditions","Score and compare vs. mock test #1","Drill your weakest question type from results","Continue 10 vocab words/day — focus on collocations now"]},
+  {w:10,phase:2,focus:"Writing Task 1 mastery",tasks:["Practice all Task 1 types: bar, line, pie, process, map","Write Task 1 in exactly 20 minutes","Key language: peaked at, declined sharply, remained stable","Never give opinions in Task 1 — only describe"]},
+  {w:11,phase:3,focus:"Mock test week + Speaking intensive",tasks:["Full mock test — all 4 modules, strict timing","Record Speaking Parts 1, 2 & 3 — analyze pronunciation","Fix top 3 grammar errors from writing feedback","100 vocabulary revision flashcards from your tracker"]},
+  {w:12,phase:3,focus:"Refinement and consolidation",tasks:["Target your weakest module only (focused drills)","Write 1 Task 1 + 1 Task 2 under exam conditions","Listen to 2 Listening tests — predict and verify answers","Do NOT learn new strategies — refine existing ones"]},
+  {w:13,phase:3,focus:"Final mock test + error correction",tasks:["Full mock test #4 — simulate exam day exactly","Review every wrong answer and understand why","Speaking: record yourself answering 20 Part 3 questions","Vocabulary final review — 200 words from your tracker"]},
+  {w:14,phase:3,focus:"Exam week — light review only",tasks:["Light listening practice only — no heavy study","Review your best Task 2 essays for confidence","Sleep well, eat well, prepare exam documents","Trust your preparation — consistency got you here"]}
+];
+
+const phaseColors={1:'#378ADD',2:'#1D9E75',3:'#D85A30'};
+
+function buildPlan(){
+  const wrap=document.getElementById('checklist-wrap');
+  wrap.innerHTML='';
+  weeks.forEach(w=>{
+    const div=document.createElement('div');
+    div.style.cssText='border-left:3px solid '+phaseColors[w.phase]+';padding-left:1rem;margin-bottom:1.25rem';
+    const header=document.createElement('div');
+    header.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:.5rem';
+    header.innerHTML='<span style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Week '+w.w+'</span><span style="font-size:12px;color:var(--color-text-secondary)">'+w.focus+'</span>';
+    div.appendChild(header);
+    const ul=document.createElement('ul');
+    ul.className='checklist';
+    w.tasks.forEach(t=>{
+      const li=document.createElement('li');
+      const box=document.createElement('span');
+      box.className='check-box';
+      box.onclick=function(){toggleCheck(this)};
+      li.appendChild(box);
+      const txt=document.createElement('span');
+      txt.textContent=t;
+      li.appendChild(txt);
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    wrap.appendChild(div);
+  });
+}
+
+function buildWeekGrid(){
+  const grid=document.getElementById('week-grid');
+  const days=['M','T','W','T','F','S','S'];
+  const today=new Date();
+  for(let i=0;i<7;i++){
+    const d=new Date(today);
+    d.setDate(today.getDate()-today.getDay()+1+i);
+    const cell=document.createElement('div');
+    cell.className='day-cell';
+    cell.dataset.date=d.toISOString().slice(0,10);
+    cell.innerHTML='<div class="day-name">'+days[i]+'</div><div class="day-num">'+d.getDate()+'</div>';
+    cell.onclick=function(){
+      this.classList.toggle('studied');
+      updateDaysStudied();
+    };
+    grid.appendChild(cell);
+  }
+}
+
+function toggleCheck(el){
+  el.classList.toggle('done');
+  if(el.classList.contains('done'))el.textContent='✓'; else el.textContent='';
+  updateTasksDone();
+}
+
+function updateDaysStudied(){
+  const n=document.querySelectorAll('.day-cell.studied').length;
+  document.getElementById('days-studied').textContent=n;
+}
+
+function updateTasksDone(){
+  const done=document.querySelectorAll('.check-box.done').length;
+  const total=document.querySelectorAll('.check-box').length;
+  document.getElementById('tasks-done').textContent=done+' / '+total;
+}
+
+let vocabWords=[];
+let todayCount=0;
+
+function addVocab(){
+  const inp=document.getElementById('vocab-word');
+  const val=inp.value.trim();
+  if(!val)return;
+  vocabWords.unshift({text:val,date:new Date().toISOString().slice(0,10)});
+  todayCount++;
+  document.getElementById('today-count').textContent=todayCount;
+  document.getElementById('vocab-count').textContent=vocabWords.length;
+  inp.value='';
+  renderVocab(vocabWords);
+}
+
+function renderVocab(list){
+  const el=document.getElementById('vocab-list');
+  if(list.length===0){el.innerHTML='<div class="muted" style="padding:1rem 0;text-align:center">No words yet — start adding!</div>';return;}
+  el.innerHTML=list.map((v,i)=>'<div class="vocab-item"><span>'+v.text+'</span><button class="del-btn" onclick="delVocab('+i+')">remove</button></div>').join('');
+}
+
+function delVocab(i){vocabWords.splice(i,1);document.getElementById('vocab-count').textContent=vocabWords.length;renderVocab(vocabWords);}
+
+function filterVocab(type){
+  if(type==='all'){renderVocab(vocabWords);return;}
+  renderVocab(vocabWords.filter(v=>v.text.toLowerCase().includes(type==='phrasal'?'phrasal':type)));
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+buildPlan();
+buildWeekGrid();
+updateTasksDone();
+</script>
